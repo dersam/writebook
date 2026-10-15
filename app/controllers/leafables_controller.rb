@@ -13,6 +13,11 @@ class LeafablesController < ApplicationController
   def create
     @leaf = @book.press new_leafable, leaf_params
     position_new_leaf @leaf
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to book_slug_path(@book), status: :see_other }
+    end
   end
 
   def show

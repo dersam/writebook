@@ -5,6 +5,17 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     sign_in :kevin
   end
 
+  test "new renders a creation form without creating a leaf" do
+    assert_no_changes -> { books(:handbook).leaves.count } do
+      get new_book_page_path(books(:handbook))
+    end
+
+    assert_response :success
+    assert_select "form#leafable-editor[action=?][method=post]", book_pages_path(books(:handbook), format: :html)
+    assert_select "form#leafable-editor input[name=_method]", count: 0
+    assert_select "nav a[href=?]", book_slug_path(books(:handbook))
+  end
+
   test "show" do
     get leafable_path(sample_page_leaf("## Hello"))
 
@@ -47,6 +58,17 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Another page", new_page.title
     assert_equal "With interesting words.", new_page.body.content
     assert_equal books(:handbook), new_page.leaf.book
+  end
+
+  test "create from an HTML form" do
+    assert_difference [ "Page.count", "Leaf.count" ], 1 do
+      post book_pages_path(books(:handbook), format: :html), params: { page: { body: "A new page." } }
+    end
+
+    assert_response :see_other
+    assert_redirected_to book_slug_path(books(:handbook))
+    assert_equal "A new page.", Page.last.body.content
+    assert_equal books(:handbook), Page.last.leaf.book
   end
 
   test "create with default params" do

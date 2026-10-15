@@ -5,8 +5,14 @@ module ActionText
       value = record.safe_markdown_attribute(name).content.to_s if value.nil?
 
       data = options.delete(:data) || {}
-      data.reverse_merge! \
-        uploads_url: action_text_markdown_uploads_url(record_gid: record.to_signed_global_id.to_s, attribute_name: name, format: "json")
+      if record.persisted?
+        data.reverse_merge! \
+          uploads_url: action_text_markdown_uploads_url(record_gid: record.to_signed_global_id.to_s, attribute_name: name, format: "json")
+      else
+        data.reverse_merge! \
+          controller: "markdown-creation",
+          action: "drop->markdown-creation#preventFileUpload:capture"
+      end
 
       tag.house_md value, name: field_name, data: data, **options
     end

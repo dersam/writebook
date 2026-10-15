@@ -2,7 +2,7 @@
 
 <% content_for :header do %>
   <nav>
-    <%= link_to @book, class: "btn flex-item-justify-start" do %>
+    <%= link_to book_slug_path(@book), class: "btn flex-item-justify-start" do %>
       <%= image_tag "remove.svg", aria: { hidden: true }, size: 24 %>
       <span class="for-screen-reader">Cancel</span>
     <% end %>
@@ -15,5 +15,5 @@
 <% end %>
 
 <div class="page--picture">
-  <%= render "pictures/form", book: @book, picture: @picture %>
+  <%= render "pictures/form", book: @book, picture: @leafable %>
 </div>

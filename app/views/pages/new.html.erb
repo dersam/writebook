@@ -2,7 +2,7 @@
 
 <% content_for :header do %>
   <nav>
-    <%= link_to @book, class: "btn flex-item-justify-start" do %>
+    <%= link_to book_slug_path(@book), class: "btn flex-item-justify-start" do %>
       <%= image_tag "remove.svg", aria: { hidden: true }, size: 24 %>
       <span class="for-screen-reader">Cancel</span>
     <% end %>
@@ -14,6 +14,13 @@
   </nav>
 <% end %>
 
+<% content_for :toolbar do %>
+  <div class="page-toolbar fill-selected align-center gap-half margin-block-end-double">
+    <%= render "house_toolbar", uploads: false %>
+    <span class="txt-small">Save the page before adding images.</span>
+  </div>
+<% end %>
+
 <article class="layout--reading">
-  <%= render "pages/form", book: @book, page: @page %>
+  <%= render "pages/form", book: @book, page: @leafable %>
 </article>
